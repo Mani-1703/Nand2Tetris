@@ -1,0 +1,57 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/DMux8Way.hdl
+/**
+ * 8-way demultiplexor:
+ * [a, b, c, d, e, f, g, h] = [in, 0,  0,  0,  0,  0,  0,  0] if sel = 000
+ *                            [0, in,  0,  0,  0,  0,  0,  0] if sel = 001
+ *                            [0,  0, in,  0,  0,  0,  0,  0] if sel = 010
+ *                            [0,  0,  0, in,  0,  0,  0,  0] if sel = 011
+ *                            [0,  0,  0,  0, in,  0,  0,  0] if sel = 100
+ *                            [0,  0,  0,  0,  0, in,  0,  0] if sel = 101
+ *                            [0,  0,  0,  0,  0,  0, in,  0] if sel = 110
+ *                            [0,  0,  0,  0,  0,  0,  0, in] if sel = 111
+ */
+CHIP DMux8Way {
+    IN in, sel[3];
+    OUT a, b, c, d, e, f, g, h;
+
+    PARTS:
+    Not(in=sel[0] , out=sel0bar );
+    Not(in=sel[1] , out=sel1bar );
+    Not(in=sel[2] , out=sel2bar );
+
+    And(a=sel1bar , b=sel0bar , out=bar00 ); // for a 
+    And(a=bar00 , b=sel2bar , out=sela );
+    And(a=sela , b=in , out=a );
+
+    And(a=sel1bar , b=sel[0] , out=bar01 ); // for b 
+    And(a=bar01 , b=sel2bar , out=selb );
+    And(a=selb , b=in , out=b );
+
+    And(a=sel[1] , b=sel0bar , out=bar10 ); // for c 
+    And(a=bar10 , b=sel2bar , out=selc );
+    And(a=selc , b=in , out=c );
+
+    And(a=sel[1] , b=sel[0] , out=bar11 ); // for d 
+    And(a=bar11 , b=sel2bar , out=seld );
+    And(a=seld , b=in , out=d );
+
+    And(a=sel1bar , b=sel0bar , out=true00 ); // for e 
+    And(a=true00 , b=sel[2] , out=sele );
+    And(a=sele , b=in , out=e );
+
+    And(a=sel1bar , b=sel[0] , out=true01 ); // for f 
+    And(a=true01 , b=sel[2] , out=self );
+    And(a=self , b=in , out=f );
+
+    And(a=sel[1] , b=sel0bar , out=true10 ); // for g 
+    And(a=true10 , b=sel[2] , out=selg );
+    And(a=selg , b=in , out=g );
+
+    And(a=sel[1] , b=sel[0] , out=true11 ); // for h 
+    And(a=true11 , b=sel[2] , out=selh );
+    And(a=selh , b=in , out=h );
+
+}

@@ -1,0 +1,83 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/2/ALU.hdl
+/**
+ * ALU (Arithmetic Logic Unit):
+ * Computes out = one of the following functions:
+ *                0, 1, -1,
+ *                x, y, !x, !y, -x, -y,
+ *                x + 1, y + 1, x - 1, y - 1,
+ *                x + y, x - y, y - x,
+ *                x & y, x | y
+ * on the 16-bit inputs x, y,
+ * according to the input bits zx, nx, zy, ny, f, no.
+ * In addition, computes the two output bits:
+ * if (out == 0) zr = 1, else zr = 0
+ * if (out < 0)  ng = 1, else ng = 0
+ */
+// Implementation: Manipulates the x and y inputs
+// and operates on the resulting values, as follows:
+// if (zx == 1) sets x = 0        // 16-bit constant
+// if (nx == 1) sets x = !x       // bitwise not
+// if (zy == 1) sets y = 0        // 16-bit constant
+// if (ny == 1) sets y = !y       // bitwise not
+// if (f == 1)  sets out = x + y  // integer 2's complement addition
+// if (f == 0)  sets out = x & y  // bitwise and
+// if (no == 1) sets out = !out   // bitwise not
+
+CHIP ALU {
+    IN  
+        x[16], y[16],  // 16-bit inputs        
+        zx, // zero the x input?
+        nx, // negate the x input?
+        zy, // zero the y input?
+        ny, // negate the y input?
+        f,  // compute (out = x + y) or (out = x & y)?
+        no; // negate the out output?
+    OUT 
+        out[16], // 16-bit output
+        zr,      // if (out == 0) equals 1, else 0
+        ng;      // if (out < 0)  equals 1, else 0
+
+    PARTS:
+    //for zx -> x can be 16'b0 when zx = 1 , so MUX16 is used
+    Mux16(a=x , b=false , sel=zx , out=zxout );
+
+    //since this a continuous operation, we need to consider zxout as our primary now
+    //for implementing nx -> again MUX needed, but we must first design !x 
+    Not16(in=zxout , out=negzxout );
+    Mux16(a=zxout , b=negzxout , sel=nx , out=nxout ); // nxout = !x when nx=1 
+
+    //similaryly we can design for zy,ny 
+    Mux16(a=y , b=false , sel=zy , out=zyout ); // implementation for zy
+    Not16(in= zyout , out=negzyout );
+    Mux16(a=zyout , b=negzyout , sel=ny , out=nyout ); // implementation for ny
+
+    //for implementing f -> f = 1 -> x+y else x&y, from here we need to consider
+    // x = nxout and y = nyout - at this stage 
+    //implementing x+y and x&y
+    Add16(a=nxout , b=nyout , out=xAddy );
+    And16(a=nxout , b=nyout , out=xAndy );
+    // use f as a sel to MUX16 
+    Mux16(a=xAndy , b=xAddy , sel=f , out=funcout ); // sel based on f 
+
+
+    // for implementing no -> again we need to do the same we did for nx and ny 
+    Not16(in=funcout , out=negfuncout );
+    Mux16(a=funcout , b=negfuncout , sel=no , out=out, out[15]=forand15, out[0..7]=lower8, out[8..15]=upper8 );// if no = 1 , negfuncout will be selected
+    //as per HDL rules, i am spiliting output bits for my use case
+    
+    //for implementing flags - zr and ng 
+    //zr - if all bits are 0 - then zr = 1 
+    // so a bitwise OR for out is needed - can be implemented by 2 or8way
+    Or8Way(in=lower8 , out=orlower);
+    Or8Way(in=upper8 , out=orupper);
+    Or(a=orlower , b=orupper , out=zrout );
+    Mux(a=true , b=false , sel=zrout , out=zr );
+    
+    //ng - if my output[15] bit has a 1 - then it is neg
+    //so we can use a AND gate to verify 
+    And(a=forand15 , b=true , out=ng );
+    
+}

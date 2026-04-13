@@ -14,7 +14,8 @@ This repository documents my implementation of the Nand2Tetris course, where a c
 
 * `project0` – Setup and initial environment
 * `project1` – Basic logic gates (AND, OR, MUX, DMUX, etc.)
-* `project2` – Arithmetic logic (in progress)
+* `project2` – Boolean Logic and ALU (Adders, Incrementer and ALU)
+* `project3` - Memories (In progress)
 
 ## Key Takeaways (So Far)
 

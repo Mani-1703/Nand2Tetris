@@ -56,7 +56,7 @@ The Program Counter (PC) is the trickiest of the given designs
 
 📄 Detailed design notes and tips are given here:
 **Program Counter Design Document** → 
-[View PDF](program_counter.pdf)
+[Program Counter Design Document](program_counter.pdf)
 ---
 
 ## Outcome

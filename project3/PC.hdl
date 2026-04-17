@@ -1,0 +1,41 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/a/PC.hdl
+/**
+ * A 16-bit counter.
+ * if      reset(t): out(t+1) = 0
+ * else if load(t):  out(t+1) = in(t)
+ * else if inc(t):   out(t+1) = out(t) + 1
+ * else              out(t+1) = out(t)
+ */
+CHIP PC {
+    IN in[16], reset, load, inc;
+    OUT out[16];
+    
+    PARTS:
+    /* This is a priority based logic with 
+     priority order ->  reset >> load >> inc 
+    the internal register inside PC keeps the present value (out[t] as output only
+    when reset=load=inc= 0 
+    Truth table 
+    ----------------------------
+    inc | load | reset | output
+    ----------------------------
+     0      0      0     out[t]
+     x      x      1     16'b0 
+     x      1      0     in[t]
+     1      0      0     out[t]+1
+     ------------------------------
+    */
+    Inc16(in=regout , out=inc16 ); // take out[t] to inc 
+    Mux16(a=false , b=inc16 , sel=inc , out=toload ); // if inc=1 -> inc16 selected and passed to load
+    Mux16(a=toload , b=in , sel=load , out=toreset ); // passed to reset 
+    Mux16(a=toreset , b=false , sel=reset , out=regin ); //moved to regin to determine which gets stored on PC's internal Register 
+    Register(in=regin , load=regload , out=regout ); // PC's Int register 
+    Or(a=inc , b=load , out=loadorinc ); // to filter oout Truth table 
+    Or(a=loadorinc , b=reset , out=regload );
+    Not16(in=regout , out=notregout ); // output port cant be used as Input - so 2 not16's
+    Not16(in=notregout , out=out );
+
+}

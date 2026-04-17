@@ -2,34 +2,60 @@
 
 ## Overview
 
-This repository documents my implementation of the Nand2Tetris course, where a complete computer system is built from first principles starting with a single NAND gate.
+This repository documents my implementation of the Nand2Tetris course, where a complete computer system is built from first principles, starting with a single NAND gate.
+
+The work progresses from basic combinational logic to sequential memory systems, forming the foundation for CPU design.
+
+---
 
 ## Goals
 
 * Strengthen understanding of digital logic design
 * Build systems hierarchically from basic gates to CPU
-* Bridge theoretical concepts with hardware implementation
+* Bridge theoretical concepts with practical hardware implementation
+
+---
 
 ## Repository Structure
 
-* `project0` – Setup and initial environment
-* `project1` – Basic logic gates (AND, OR, MUX, DMUX, etc.)
-* `project2` – Boolean Logic and ALU (Adders, Incrementer and ALU)
-* `project3` - Memories (In progress)
+* `project0` – Setup and development environment
+* `project1` – Elementary logic gates (AND, OR, MUX, DMUX, etc.)
+* `project2` – Arithmetic logic (Adders, Incrementer, ALU)
+* `project3` – Memory components (Registers, RAM hierarchy, Program Counter)
+* `project4` – Machine language (Upcoming)
+* `project5` – CPU design (Upcoming)
+* `project6` – Assembler (Upcoming)
+
+---
+
+## Progress
+
+* Project 0 – Completed
+* Project 1 – Completed
+* Project 2 – Completed
+* Project 3 – Completed
+* Project 4 – In Progress
+
+---
 
 ## Key Takeaways (So Far)
 
-* Hardware can be constructed from minimal primitives
-* Multiplexers are central to data routing
-* Hierarchical design simplifies complex systems
+* Complex hardware systems can be constructed from minimal primitives
+* Multiplexers and demultiplexers are central to data routing
+* Sequential logic enables stateful computation
+* Hierarchical design simplifies scalable system construction
+
+---
 
 ## Relevance to My Work
 
-This work aligns with my interest in FPGA-based system design, where similar logic structures are implemented using LUTs and routing fabrics.
+This work aligns with my interest in FPGA-based system design, where similar logic structures are implemented using LUTs and configurable routing fabrics.
 
-## Note on Academic Integrity
+---
+
+## Academic Integrity
 
 This repository contains my personal implementations.
 Official test scripts and course materials are not included to respect the course honor code.
 
-If you are taking the course, I strongly encourage solving the projects independently.
+If you are taking the course, I strongly encourage completing the projects independently.

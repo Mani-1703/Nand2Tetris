@@ -1,4 +1,4 @@
-# Nand2Tetris – From Logic Gates to Computer Architecture
+# Nand2Tetris – From Logic Gates to a Working Computer
 
 ## Overview
 

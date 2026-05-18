@@ -1,0 +1,111 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/5/CPU.hdl
+/**
+ * The Hack Central Processing unit (CPU).
+ * Parses the binary code in the instruction input and executes it according to the
+ * Hack machine language specification. In the case of a C-instruction, computes the
+ * function specified by the instruction. If the instruction specifies to read a memory
+ * value, the inM input is expected to contain this value. If the instruction specifies
+ * to write a value to the memory, sets the outM output to this value, sets the addressM
+ * output to the target address, and asserts the writeM output (when writeM = 0, any
+ * value may appear in outM).
+ * If the reset input is 0, computes the address of the next instruction and sets the
+ * pc output to that value. If the reset input is 1, sets pc to 0.
+ * Note: The outM and writeM outputs are combinational: they are affected by the
+ * instruction's execution during the current cycle. The addressM and pc outputs are
+ * clocked: although they are affected by the instruction's execution, they commit to
+ * their new values only in the next cycle.
+ */
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+    // main objective is to find the control bits 'c' 
+    // a 16 bit instruction is encoded as 
+    // 1  1  1  a  c1 c2 c3 c4 c5 c6 d1 d2 d3 j1 j2 j3 
+    // 15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0  // bit pos
+    // Format : Dest = cmp ; jmp 
+    //           d      c     j   
+
+	// START with the given CPU design - from instruction input
+    // can be A ins or C ins 
+    // we treat Ainstruction , Cinstructions as flags 
+    Not(in=instruction[15] , out=Ainstruction ); // if [15] is 0 -> Ains flag goes high
+    Not(in=Ainstruction , out=Cinstruction ); // vice versa for Cins
+
+    // if incoming is an A instruction
+    //   Aregin = instruction value
+    // else if (Cinstruction with dest=A)
+    //   Aregin = ALUout
+    And(a=Cinstruction , b=instruction[5] , out=ALUtoA );
+    Mux16(a=instruction , b=ALUout , sel=ALUtoA , out=Aregin );
+
+    // Areg must store A instruction or C instruction having dest = a 
+    Or(a=Ainstruction , b=ALUtoA , out=loadAreg );
+    ARegister(in=Aregin , load=loadAreg , out=Aregout );
+
+    // Dregister 
+    // sotring something to D is based on d2 {instruction[4]} and it has to be a Cinstruction
+    And(a=instruction[4] , b=Cinstruction , out=loadD );
+    DRegister(in=ALUout , load=loadD , out=Dregout );
+
+    // comp in ALU to take Aregout / inM is determined by "a" bit {instruction[12]}
+    Mux16(a=Aregout , b=inM , sel=instruction[12] , out=AMout );
+
+
+    // For ALU -> one input is from Dreg and another is from Mux output of Areg / inM
+    // the comp logic has the same logic as the ALU we have designed - so just wire corresponding pos
+    ALU(x=Dregout , y=AMout , zx=instruction[11] , nx=instruction[10] , zy=instruction[9] , ny=instruction[8] , f=instruction[7] , no=instruction[6] , out=ALUout , zr=Zrout , ng=Ngout );
+    // we will keep the zr and ng flags as wires 
+    
+    // TO write to a memory 
+    // 1) what value to write -> by outM 
+    // 2) where to write -> by addressM 
+    // 3) when to write -> by writeM
+    // Do 1) 
+    Or16(a=false , b=ALUout , out=outM );
+    // Do 2) Memory address = value inside A register (15 bits by default) 
+    Or16(a=false , b=Aregout , out[0..14]=addressM );
+    // Do 3) Write to mem only when d3 = 1 { instruction[3]} 
+    And(a=Cinstruction , b=instruction[3] , out=writeM );
+
+    // Implementing the Program counter
+    //objective here is to calc load and inc for PC 
+
+
+    // PC's load functionality is determined by the jump bits j1 , j2, j3  and the Zr Ng flags of ALU
+    // if Zr is high - then we have to check all possible conditions for "Eq to 0"
+    // this is determined when j2 = 1 {instruction[1]
+    And(a=Zrout , b=instruction[1] , out=jumpeq );
+    // similarly for Negative - check all negative cases "lesser than 0" 
+    And(a=Ngout , b=instruction[2] , out=jumpless );
+    // and if it is not zr or ng then it should obviously be +ve
+    Or(a=Zrout , b=Ngout , out=Zrng );
+    // if it is NOT -> then positive
+    Not(in=Zrng , out=positive );
+    // for Greater than 0 condition
+    And(a=positive , b=instruction[0] , out=jumpgreater );
+    // So i have to load my prog counter only at jeq,jle,jgt + mandatorily it has to be C ins
+    Or(a=jumpeq , b=jumpless , out=jeqle );
+    Or(a=jeqle , b=jumpgreater , out= jmps );
+    And(a=jmps , b=Cinstruction , out=Loadpc );
+
+    // for inc -> when i dont load -> i increment 
+    Not(in=Loadpc , out=incpc );
+
+    // we only want to do PC operations to address -> so input is from Areg
+    PC(in=Aregout , load=Loadpc , inc=incpc , reset=reset , out[0..14]=pc );
+    
+}

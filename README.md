@@ -1,18 +1,23 @@
-# Nand2Tetris – Part 1 - From Logic Gates to Computer Architecture
+# Nand2Tetris – Part 1
+
+## Demystifying Computer Hardware: From Logic Gates to a Functional CPU
 
 ## Overview
 
-This repository documents my implementation of the Nand2Tetris course, where a complete computer system is built from first principles, starting with a single NAND gate.
+This repository documents my work through Part 1 of the Nand2Tetris course, focused on understanding how modern computer hardware is constructed from first principles.
 
-The work progresses from combinational logic and sequential memory systems to low-level machine language programming and full CPU integration, culminating in the construction of a functional 16-bit Hack computer.
+Starting from a single NAND gate, the projects progressively build combinational logic, arithmetic units, memory systems, machine-level programming concepts, and finally a complete 16-bit Hack computer architecture.
+
+The primary goal of this work was not just completing the projects, but understanding how individual hardware components integrate together to form a functioning computer system.
 
 ---
 
 ## Goals
 
-* Strengthen understanding of digital logic design
-* Build systems hierarchically from basic gates to CPU
-* Bridge theoretical concepts with practical hardware and low-level software implementation
+* Understand the fundamentals of digital hardware design
+* Explore how complex systems emerge from simple logic primitives
+* Build and integrate core computer architecture components
+* Strengthen low-level hardware and system design understanding
 
 ---
 
@@ -21,52 +26,46 @@ The work progresses from combinational logic and sequential memory systems to lo
 * `project0` – Setup and development environment
 * `project1` – Elementary logic gates (AND, OR, MUX, DMUX, etc.)
 * `project2` – Arithmetic logic (Adders, Incrementer, ALU)
-* `project3` – Memory components (Registers, RAM hierarchy, Program Counter)
-* `project4` – Machine language (Hack assembly: Mult.asm, Fill.asm)
-* `project5` – Computer architecture (CPU and Hack computer integration)
-* `project6` – Assembler (Upcoming)
+* `project3` – Memory systems (Registers, RAM hierarchy, Program Counter)
+* `project4` – Machine language programming (Hack assembly)
+* `project5` – CPU and complete Hack computer integration
+* `project6` – Manual assembly translation and machine code generation
 
 ---
 
-## Progress
+## Key Concepts Explored
 
-* Project 0 – Completed
-* Project 1 – Completed
-* Project 2 – Completed
-* Project 3 – Completed
-* Project 4 – Completed
-* Project 5 – Completed
-* Project 6 – In Progress
-
----
-
-## Key Takeaways (So Far)
-
-* Complex hardware systems can be constructed from minimal primitives
-* Multiplexers and demultiplexers are central to data routing
-* Sequential logic enables stateful computation
-* Machine-level programming provides direct control over hardware behavior
-* CPU functionality emerges from coordinated control and data-path logic
-* Hierarchical design simplifies scalable system construction
+* Digital Logic Design
+* Combinational and Sequential Logic
+* Arithmetic Logic Unit (ALU) Design
+* Memory System Architecture
+* Program Counter and Register Design
+* CPU Architecture and Instruction Execution
+* Data Path and Control Logic
+* Machine Language and Assembly Programming
+* Memory-Mapped I/O
+* Hardware-Software Interaction
 
 ---
 
-## Relevance to My Work
+## Relevance to Hardware Design
 
-This work aligns with my interest in FPGA-based system design, where similar logic structures are implemented using LUTs and configurable routing fabrics.
+This work closely aligns with FPGA-oriented digital system design and computer architecture fundamentals.
 
-It also strengthens understanding of:
+The projects provided hands-on exposure to:
 
-* Processor architecture
-* Instruction execution flow
-* Hardware-software interaction
-* Low-level system design principles
+* Hierarchical hardware construction
+* State-based system behavior
+* Processor control flow
+* Low-level instruction execution
+* Integration of hardware components into a complete computing system
 
 ---
 
 ## Academic Integrity
 
-This repository contains my personal implementations.
+This repository contains my personal implementations and work completed as part of the Nand2Tetris course.
+
 Official test scripts and course materials are not included to respect the course honor code.
 
-If you are taking the course, I strongly encourage completing the projects independently.
+If you are currently taking the course, I strongly encourage completing the projects independently.

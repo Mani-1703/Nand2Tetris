@@ -30,8 +30,6 @@ to create a functional 16-bit computer capable of executing programs written in 
 * Memory integration
 * Computer system integration
 
-Additional helper chips (if any) were also implemented as part of the design process.
-
 ---
 
 ## Key Concepts Learned
